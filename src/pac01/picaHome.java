@@ -21,6 +21,10 @@ import java.awt.Point;
 import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class picaHome {
 
@@ -62,11 +66,14 @@ public class picaHome {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frmPiccaHut.getContentPane().add(tabbedPane);
 		
-		JPanel pnlMain = new JPanel();
-		tabbedPane.addTab("Welcome!", null, pnlMain, null);
-		pnlMain.setLayout(null);
+		JPanel pnlPicas = new JPanel();
+		JPanel pnlOrders = new JPanel();
+		JPanel pnlBucket = new JPanel();
 		
-		initializeLogo(pnlMain);
+		JPanel pnlMain = new JPanel();
+		pnlMain.setName("Welcome!");
+		tabbedPane.addTab("Welcome!", null, pnlMain, null);		
+		pnlMain.setLayout(null);
 		
 		JLabel lblNewLabel_1 = new JLabel("Labākas picas Latvijā");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -74,26 +81,57 @@ public class picaHome {
 		pnlMain.add(lblNewLabel_1);
 		
 		JButton btnMainPicas = new JButton("Picas");
+		btnMainPicas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.remove(pnlMain);
+				tabbedPane.add(pnlPicas);
+			}
+		});
 		btnMainPicas.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnMainPicas.setBounds(500, 105, 143, 37);
 		pnlMain.add(btnMainPicas);
 		
 		JButton btnMainStuff = new JButton("Personālam");
+		btnMainStuff.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.remove(pnlMain);
+				tabbedPane.add(pnlOrders);
+			}			
+		});
 		btnMainStuff.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnMainStuff.setBounds(500, 307, 143, 37);
 		pnlMain.add(btnMainStuff);
 		
 		JButton btnExit = new JButton("Iziet");
+		btnExit.addActionListener(new CloseListener());
 		btnExit.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnExit.setBounds(500, 153, 143, 37);
 		pnlMain.add(btnExit);
+				
+		//JPanel pnlOrders = new JPanel();
+		pnlOrders.setName("Pasūtījumi");
+		tabbedPane.addTab("Pasūtījumi", null, pnlOrders, null);
+		pnlOrders.setLayout(null);
 		
-		JPanel pnlPicas = new JPanel();
+		//JPanel panel_3 = new JPanel();
+		pnlBucket.setName("Grozs");
+		tabbedPane.addTab("Grozs", null, pnlBucket, null);
+		
+		initializeLogo(pnlMain);
+		
+		//pnlPicas = new JPanel();
+		pnlPicas.setName("Picas");
 		tabbedPane.addTab("Picas", null, pnlPicas, null);
 		pnlPicas.setLayout(null);
 		
 		JButton btnPicaBack = new JButton(new ImageIcon(((new ImageIcon(
 	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
+		btnPicaBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.add(pnlMain);
+				tabbedPane.remove(pnlPicas);
+			}
+		});
 		btnPicaBack.setSize(40, 40);
 		btnPicaBack.setLocation(new Point(635, 11));
 		pnlPicas.add(btnPicaBack);
@@ -117,7 +155,6 @@ public class picaHome {
 		lblSalami.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblSalami.setBounds(461, 82, 127, 29);
 		pnlPicas.add(lblSalami);
-		initializePicas(pnlPicas);
 		
 		JLabel lblNewLabel = new JLabel("<html>picas mīkla, siers, marinēti<br> \r\nšampinjoni, sīpoli, paprika, <br> \r\nolīvas, tomātu mērce, ķiploks, <br> \r\ngaršvielas");
 		lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 12));
@@ -174,10 +211,16 @@ public class picaHome {
 		pnlPicas.add(btnSal50);
 		
 		JButton btnPicaBucket = new JButton((Icon) null);
+		btnPicaBucket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.add(pnlBucket);
+				tabbedPane.remove(pnlPicas);
+			}
+		});
 		btnPicaBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnPicaBucket.setText("Grozs");
 		btnPicaBucket.setLocation(new Point(635, 11));
-		btnPicaBucket.setBounds(500, 11, 127, 40);
+		btnPicaBucket.setBounds(500, 11, 127, 40);		
 		pnlPicas.add(btnPicaBucket);
 		
 		JButton btnPicaAddToBucket = new JButton((Icon) null);
@@ -185,18 +228,60 @@ public class picaHome {
 		btnPicaAddToBucket.setLocation(new Point(635, 11));
 		btnPicaAddToBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnPicaAddToBucket.setBounds(355, 330, 266, 40);
-		pnlPicas.add(btnPicaAddToBucket);
-				
-		JPanel pnlOrders = new JPanel();
-		tabbedPane.addTab("Pasutījumi", null, pnlOrders, null);
-		pnlOrders.setLayout(null);
 		
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_3, null);
+		pnlPicas.add(btnPicaAddToBucket);
+		
+		JLabel lblVegPrice = new JLabel("lblVegPrice");
+		lblVegPrice.setToolTipText("");
+		lblVegPrice.setText("");
+		lblVegPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblVegPrice.setBounds(131, 137, 100, 40);
+		pnlPicas.add(lblVegPrice);
+		
+		JLabel lblDarPrice = new JLabel("lblDarPrice");
+		lblDarPrice.setToolTipText("");
+		lblDarPrice.setText("");
+		lblDarPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblDarPrice.setBounds(351, 137, 100, 40);
+		pnlPicas.add(lblDarPrice);
+		
+		JLabel lblSalPrice = new JLabel("lblSalPrice");
+		lblSalPrice.setToolTipText("");
+		lblSalPrice.setText("");
+		lblSalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSalPrice.setBounds(571, 137, 100, 40);
+		pnlPicas.add(lblSalPrice);
+		
+		initializePicas(pnlPicas);
+		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);
+		
+		JButton btnOrdersBack = new JButton(new ImageIcon(((new ImageIcon(
+	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
+		btnOrdersBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.add(pnlMain);
+				tabbedPane.remove(pnlOrders);
+			}
+		});
+		btnOrdersBack.setLocation(new Point(635, 11));
+		btnOrdersBack.setBounds(635, 11, 40, 40);
+		pnlOrders.add(btnOrdersBack);
+		pnlBucket.setLayout(null);
+		
+		JButton btnBucketBack = new JButton(new ImageIcon(((new ImageIcon(
+	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
+		btnBucketBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabbedPane.add(pnlPicas);
+				tabbedPane.remove(pnlBucket);
+			}
+		});
+		btnBucketBack.setLocation(new Point(635, 11));
+		btnBucketBack.setBounds(635, 11, 40, 40);
+		pnlBucket.add(btnBucketBack);
 	}
 	
 	private void initializeLogo(JPanel pnlMain) {
-		//ImageImplement pnlMainPizzaLogo = new ImageImplement(new ImageIcon("G:\\Java2020\\RTU_FinalProj\\PizzaLogo01.png").getImage(), 300, 300);
 		ImageImplement pnlMainPizzaLogo = new ImageImplement(new ImageIcon("PizzaLogo01.png").getImage(), 300, 300);	
 		pnlMainPizzaLogo.setLocation(10, 44);
 		pnlMain.add(pnlMainPizzaLogo);
@@ -205,22 +290,33 @@ public class picaHome {
 	}
 	
 	private void initializePicas(JPanel pnlPicas) {
-		//ImageImplement pnlPicaVegetara = new ImageImplement(new ImageIcon("G:\\Java2020\\RTU_FinalProj\\Veģetārā.png").getImage(), 100, 100);
 		ImageImplement pnlPicaVegetara = new ImageImplement(new ImageIcon("Veģetārā.png").getImage(), 100, 100);
 		pnlPicas.add(pnlPicaVegetara);
 		pnlPicaVegetara.setBounds(21, 99, 100, 100);
 		pnlPicaVegetara.setVisible(true);
 		
-		//ImageImplement pnlPicaDarzenu = new ImageImplement(new ImageIcon("G:\\Java2020\\RTU_FinalProj\\Ar-dārzeņiem-bez-siera.png").getImage(), 100, 100);
 		ImageImplement pnlPicaDarzenu = new ImageImplement(new ImageIcon("Ar-dārzeņiem-bez-siera.png").getImage(), 100, 100);
 		pnlPicaDarzenu.setBounds(241, 99, 100, 100);
 		pnlPicas.add(pnlPicaDarzenu);
 		pnlPicaDarzenu.setVisible(true);
 		
-		//ImageImplement pnlPicaSalami = new ImageImplement(new ImageIcon("G:\\Java2020\\RTU_FinalProj\\Ar-salami.png").getImage(), 100, 100);
 		ImageImplement pnlPicaSalami = new ImageImplement(new ImageIcon("Ar-salami.png").getImage(), 100, 100);
 		pnlPicaSalami.setBounds(463, 99, 100, 100);
 		pnlPicas.add(pnlPicaSalami);
 		pnlPicaSalami.setVisible(true);
 	}
+	
+	private void onStart(JTabbedPane tabbedPane, JPanel pnlPicas, JPanel pnlOrders, JPanel pnlBucket) {
+		tabbedPane.remove(pnlPicas);
+		tabbedPane.remove(pnlOrders);
+		tabbedPane.remove(pnlBucket);
+	}
+}
+
+class CloseListener implements ActionListener{
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //DO SOMETHING
+        System.exit(0);
+    }
 }
