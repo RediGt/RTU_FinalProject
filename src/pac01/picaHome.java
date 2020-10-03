@@ -28,6 +28,10 @@ import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class picaHome {
 
@@ -37,6 +41,9 @@ public class picaHome {
 	private LinkedList<Order> clientOrder = new LinkedList<Order>();
 	Connections con = new Connections();
 	Picas currentOrder = null;
+	private JTextField tFieldAddress;
+	private JTextField tFieldDateTime;
+	private JTextField tFieldPhone;
 	/**
 	 * Launch the application.
 	 */
@@ -91,6 +98,8 @@ public class picaHome {
 		JButton btnSal30 = new JButton("30");
 		JButton btnSal50 = new JButton("50");
 		
+		JLabel lblGrozsOrder = new JLabel("Jūsu gozs ir tukšs!");
+		
 		//Connections
 		picas = con.LoadSqlPicas();
 		
@@ -139,7 +148,7 @@ public class picaHome {
 		initializeLogo(pnlMain);
 		
 		//
-		//pnlPicas = new JPanel();
+		//Picas Panel Elements
 		//
 		//pnlPicas
 		pnlPicas.setName("Picas");
@@ -328,7 +337,19 @@ public class picaHome {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.add(pnlBucket);
 				tabbedPane.remove(pnlPicas);
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
 				Order.printClientOrder(clientOrder);
+				String orderString = Order.clientOrderToString(clientOrder);
+				if (clientOrder.size() != 0)
+				{
+					lblGrozsOrder.setBounds(377, 94, 280, (30 * (clientOrder.size() + 2)));
+					lblGrozsOrder.setText(orderString);
+				}
+				else {
+					lblGrozsOrder.setBounds(377, 94, 280, 30);
+					lblGrozsOrder.setText("Jūsu gozs ir tukšs!");
+				}
 			}
 		});
 		btnPicaBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -370,35 +391,35 @@ public class picaHome {
 		btnClearBucket.setBounds(377, 11, 113, 40);
 		pnlPicas.add(btnClearBucket);
 		
-		//JLabel lblVegPrice = new JLabel("lblVegPrice");
+		//JLabel lblVegPrice
 		lblVegPrice.setToolTipText("");
 		lblVegPrice.setText("");
 		lblVegPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblVegPrice.setBounds(131, 137, 100, 40);
 		pnlPicas.add(lblVegPrice);
 		
-		//JLabel lblDarPrice = new JLabel("lblDarPrice");
+		//JLabel lblDarPrice
 		lblDarPrice.setToolTipText("");
 		lblDarPrice.setText("");
 		lblDarPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDarPrice.setBounds(351, 137, 100, 40);
 		pnlPicas.add(lblDarPrice);
 		
-		//JLabel lblSalPrice = new JLabel("lblSalPrice");
+		//JLabel lblSalPrice
 		lblSalPrice.setToolTipText("");
 		lblSalPrice.setText("");
 		lblSalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblSalPrice.setBounds(571, 137, 100, 40);
 		pnlPicas.add(lblSalPrice);
 		
-		//JPanel pnlOrders = new JPanel();
-				pnlOrders.setName("Pasūtījumi");
-				tabbedPane.addTab("Pasūtījumi", null, pnlOrders, null);
-				pnlOrders.setLayout(null);
-				
-				//JPanel pnlBucket
-				pnlBucket.setName("Grozs");
-				tabbedPane.addTab("Grozs", null, pnlBucket, null);
+		
+		//
+		//Orders Panel Elements
+		//
+		//JPanel pnlOrders
+		pnlOrders.setName("Pasūtījumi");
+		tabbedPane.addTab("Pasūtījumi", null, pnlOrders, null);
+		pnlOrders.setLayout(null);
 		
 		JButton btnOrdersBack = new JButton(new ImageIcon(((new ImageIcon(
 	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
@@ -411,7 +432,18 @@ public class picaHome {
 		btnOrdersBack.setLocation(new Point(635, 11));
 		btnOrdersBack.setBounds(635, 11, 40, 40);
 		pnlOrders.add(btnOrdersBack);
-		pnlBucket.setLayout(null);
+		
+		//
+		//Methods
+		//
+		initializePicas(pnlPicas);
+		
+		//
+		//Bucket Panel Elements
+		//
+		//JPanel pnlBucket
+		pnlBucket.setName("Grozs");
+		tabbedPane.addTab("Grozs", null, pnlBucket, null);		
 		
 		JButton btnBucketBack = new JButton(new ImageIcon(((new ImageIcon(
 	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
@@ -424,10 +456,119 @@ public class picaHome {
 		btnBucketBack.setLocation(new Point(635, 11));
 		btnBucketBack.setBounds(635, 11, 40, 40);
 		pnlBucket.add(btnBucketBack);
+		pnlBucket.setLayout(null);
+		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);		
 		
-		initializePicas(pnlPicas);
-		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);
+		JLabel lblGrozsOrderPlacement = new JLabel("Pasūtījuma noformēšana");
+		lblGrozsOrderPlacement.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblGrozsOrderPlacement.setBounds(10, 11, 324, 32);
+		pnlBucket.add(lblGrozsOrderPlacement);
 		
+		JLabel lblGrozsCustomerInfo = new JLabel("Pasūtītāja informācija :");
+		lblGrozsCustomerInfo.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblGrozsCustomerInfo.setBounds(10, 54, 324, 32);
+		pnlBucket.add(lblGrozsCustomerInfo);
+		
+		JLabel lblGrozsOrderHeader = new JLabel("Pasūtījums :");
+		lblGrozsOrderHeader.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblGrozsOrderHeader.setBounds(377, 54, 136, 32);
+		pnlBucket.add(lblGrozsOrderHeader);
+		
+		//JLabel lblGrozsOrder = new JLabel("Jūsu gozs ir tukšs!");
+		lblGrozsOrder.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblGrozsOrder.setBounds(377, 94, 281, 32);
+		pnlBucket.add(lblGrozsOrder);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 81, 300, 12);
+		pnlBucket.add(separator);
+		
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(377, 81, 233, 12);
+		pnlBucket.add(separator_1);
+		
+		JTextField tFieldName = new JTextField("Vārds");
+		tFieldName.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (tFieldName.getText().equals("")) {
+					tFieldName.setText("Vārds");
+				}
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tFieldName.getText().equals("Vārds")) {
+					tFieldName.setText("");
+				}
+			}
+		});
+		tFieldName.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tFieldName.setColumns(10);
+		tFieldName.setBounds(10, 97, 313, 31);
+		pnlBucket.add(tFieldName);
+		
+		tFieldAddress = new JTextField();
+		tFieldAddress.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tFieldAddress.getText().equals("Piegādes adrese")) {
+					tFieldAddress.setText("");
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (tFieldAddress.getText().equals("")) {
+					tFieldAddress.setText("Piegādes adrese");
+				}
+			}
+		});
+		tFieldAddress.setText("Piegādes adrese");
+		tFieldAddress.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tFieldAddress.setColumns(10);
+		tFieldAddress.setBounds(10, 181, 313, 31);
+		pnlBucket.add(tFieldAddress);
+		
+		tFieldDateTime = new JTextField();
+		tFieldDateTime.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tFieldDateTime.getText().equals("Vēlamais datums un laiks (dd.mm ss:mm)")) {
+					tFieldDateTime.setText("");
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (tFieldPhone.getText().equals("")) {
+					tFieldPhone.setText("Vēlamais datums un laiks (dd.mm ss:mm)");
+				}
+			}
+		});
+		tFieldDateTime.setText("Vēlamais datums un laiks (dd.mm ss:mm)");
+		tFieldDateTime.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tFieldDateTime.setColumns(10);
+		tFieldDateTime.setBounds(10, 223, 313, 31);
+		pnlBucket.add(tFieldDateTime);
+		
+		tFieldPhone = new JTextField();
+		tFieldPhone.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (tFieldPhone.getText().equals("Kontakttālrunis (xx xxx xxx)")) {
+					tFieldPhone.setText("");
+				}
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				if (tFieldPhone.getText().equals("")) {
+					tFieldPhone.setText("Kontakttālrunis (xx xxx xxx)");
+				}
+			}
+		});
+		tFieldPhone.setText("Kontakttālrunis (xx xxx xxx)");
+		tFieldPhone.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tFieldPhone.setColumns(10);
+		tFieldPhone.setBounds(10, 139, 313, 31);
+		pnlBucket.add(tFieldPhone);
 	}
 	
 	private void initializeLogo(JPanel pnlMain) {

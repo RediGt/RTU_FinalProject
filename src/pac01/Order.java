@@ -1,5 +1,6 @@
 package pac01;
 
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,5 +22,23 @@ public class Order {
     public static void printClientOrder(LinkedList<Order> clientOrder) {
     	for(Order i:clientOrder)
     		System.out.println(i.id + "  " + i.picaName + "  " + i.size + "  " + i.price);  
+	}
+    
+    public static String clientOrderToString(LinkedList<Order> clientOrder) {
+    	String orderString = "";
+    	for(Order i:clientOrder)
+    		orderString += ("<html>" + i.id + ".\t" + i.picaName + "\t" + i.size + "cm\t" + i.price + "eur<br>");  
+    	
+    	orderString += ("<br><br>Kopā: "); 
+    	orderString += clientOrderTotal(clientOrder) + " eur";
+    	return orderString;
+	}
+    
+    public static Double clientOrderTotal(LinkedList<Order> clientOrder) {
+    	Double total = 0.0;
+    	//DecimalFormat df = new DecimalFormat("###.##");
+    	for(Order i:clientOrder)
+    		total += Double.valueOf(i.price);
+    	return Math.round(total * 100.0) / 100.0;
 	}
 }
