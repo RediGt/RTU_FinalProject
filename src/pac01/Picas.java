@@ -22,4 +22,24 @@ public class Picas {
 	public void printPica() {
 		System.out.println(this.id + "  " + this.name + "   " + this.price);  
 	}
+	
+	public String getPicaID() {
+		return this.id;
+	}
+	
+	public String getPicaName() {
+		return this.name;
+	}
+	
+	public String getPicaSize() {
+		return this.size;
+	}
+	
+	public String getPicaPrice() {
+		return this.price;
+	}
+	
+	public String getPicaDescription() {
+		return this.description;
+	}
 }

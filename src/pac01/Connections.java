@@ -10,10 +10,8 @@ public class Connections {
     private String uid = "root";
     private String password = "Mazda636";
 
-    public Boolean Open()
-    {
-        try
-        {
+    public Boolean Open() {
+        try {
         	Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(server + database, uid, password);
 			System.out.println("Connection succeeded!");
@@ -25,10 +23,8 @@ public class Connections {
         return true;
     }
 
-    public Boolean Close()
-    {
-        try
-        {
+    public Boolean Close() {
+        try {
         	this.connection.close();
         }
         catch (Exception e1) {
@@ -40,25 +36,20 @@ public class Connections {
     
 	public LinkedList<Picas> LoadSqlPicas() {
         LinkedList<Picas> picas = new LinkedList<Picas>();
-
         String query = "SELECT * FROM pizzashop.pizzas";       
 
-        if (this.Open() == true)
-        {
-        	try
-            {
+        if (this.Open() == true) {
+        	try {
 	        	Statement stmt = connection.createStatement();
 	        	ResultSet rs = stmt.executeQuery(query);
 	        	
-	            while (rs.next())
-	            {
+	            while (rs.next()){
 	                picas.add(new Picas(String.valueOf(rs.getInt("id")), 
 	                					rs.getString("pizzaName"), 
 	                					String.valueOf(rs.getInt("size")),
 	                					String.valueOf(rs.getDouble("price")), 
 	                					rs.getString("picaDescription")));
 	            }
-
 	            rs.close();
 				stmt.close();
 				this.Close();
@@ -67,8 +58,7 @@ public class Connections {
     			System.out.println("Connection failed!");
             }
         }
-        else
-        {
+        else {
             picas = null;
         }
         return picas;

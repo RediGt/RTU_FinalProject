@@ -21,6 +21,8 @@ import java.awt.Point;
 import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.plaf.ColorUIResource;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
@@ -30,7 +32,8 @@ import java.awt.event.ActionEvent;
 public class picaHome {
 
 	private JFrame frmPiccaHut;
-
+	LinkedList<Picas> picas = new LinkedList<Picas>();
+	Connections con = new Connections();
 	/**
 	 * Launch the application.
 	 */
@@ -45,11 +48,6 @@ public class picaHome {
 				}
 			}
 		});
-		
-		LinkedList<Picas> picas = new LinkedList<Picas>();
-		Connections con = new Connections();
-		picas = con.LoadSqlPicas();
-		printArr(picas);
 	}
 
 	private static void printArr(LinkedList<Picas> arr)
@@ -69,6 +67,8 @@ public class picaHome {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		picas = con.LoadSqlPicas();
+		
 		frmPiccaHut = new JFrame();
 		frmPiccaHut.setTitle("Picca Hut");
 		frmPiccaHut.setBounds(100, 100, 706, 483);
@@ -81,6 +81,19 @@ public class picaHome {
 		JPanel pnlPicas = new JPanel();
 		JPanel pnlOrders = new JPanel();
 		JPanel pnlBucket = new JPanel();
+		
+		JLabel lblVegPrice = new JLabel("lblVegPrice");
+		JLabel lblDarPrice = new JLabel("lblDarPrice");
+		JLabel lblSalPrice = new JLabel("lblSalPrice");
+		JButton btnVeg20 = new JButton("20");
+		JButton btnVeg30 = new JButton("30");
+		JButton btnVeg50 = new JButton("50");
+		JButton btnDar20 = new JButton("20");
+		JButton btnDar30 = new JButton("30");
+		JButton btnDar50 = new JButton("50");
+		JButton btnSal20 = new JButton("20");
+		JButton btnSal30 = new JButton("30");
+		JButton btnSal50 = new JButton("50");
 		
 		JPanel pnlMain = new JPanel();
 		pnlMain.setName("Welcome!");
@@ -186,39 +199,121 @@ public class picaHome {
 		lblpicasMklaSiers.setBounds(461, 192, 177, 69);
 		pnlPicas.add(lblpicasMklaSiers);
 		
-		JButton btnVeg20 = new JButton("20");
+		//JButton btnVeg20 = new JButton("20");
+		btnVeg20.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(0).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblVegPrice.setText(price + " eur");
+				btnVeg20.setBackground(Color.orange);
+			}
+		});
 		btnVeg20.setBounds(21, 273, 50, 30);
+		//btnVeg20.setBackground(Color.getHSBColor(238, 238, 238));
 		pnlPicas.add(btnVeg20);
 		
-		JButton btnVeg30 = new JButton("30");
+		//JButton btnVeg30 = new JButton("30");
+		btnVeg30.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(1).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblVegPrice.setText(price + " eur");
+				btnVeg30.setBackground(Color.orange);
+			}
+		});
 		btnVeg30.setBounds(76, 273, 50, 30);
 		pnlPicas.add(btnVeg30);
 		
-		JButton btnVeg50 = new JButton("50");
+		//JButton btnVeg50 = new JButton("50");
+		btnVeg50.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(2).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblVegPrice.setText(price + " eur");
+				btnVeg50.setBackground(Color.orange);
+			}
+		});
 		btnVeg50.setBounds(131, 273, 50, 30);
 		pnlPicas.add(btnVeg50);
 		
-		JButton btnDar50 = new JButton("50");
-		btnDar50.setBounds(351, 273, 50, 30);
-		pnlPicas.add(btnDar50);
-		
-		JButton btnDar30 = new JButton("30");
-		btnDar30.setBounds(296, 273, 50, 30);
-		pnlPicas.add(btnDar30);
-		
-		JButton btnDar20 = new JButton("20");
+		//JButton btnDar20 = new JButton("20");
+		btnDar20.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(3).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblDarPrice.setText(price + " eur");
+				btnDar20.setBackground(Color.orange);
+			}
+		});
 		btnDar20.setBounds(241, 273, 50, 30);
 		pnlPicas.add(btnDar20);
 		
-		JButton btnSal20 = new JButton("20");
+		//JButton btnDar30 = new JButton("30");		
+		btnDar30.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(4).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblDarPrice.setText(price + " eur");
+				btnDar30.setBackground(Color.orange);
+			}
+		});
+		btnDar30.setBounds(296, 273, 50, 30);
+		pnlPicas.add(btnDar30);
+		
+		//JButton btnDar50 = new JButton("50");
+		btnDar50.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(5).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblDarPrice.setText(price + " eur");
+				btnDar50.setBackground(Color.orange);
+			}
+		});
+		btnDar50.setBounds(351, 273, 50, 30);
+		pnlPicas.add(btnDar50);
+		
+		//JButton btnSal20 = new JButton("20");
+		btnSal20.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(6).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblSalPrice.setText(price + " eur");
+				btnSal20.setBackground(Color.orange);
+			}
+		});
 		btnSal20.setBounds(461, 273, 50, 30);
 		pnlPicas.add(btnSal20);
 		
-		JButton btnSal30 = new JButton("30");
+		//JButton btnSal30 = new JButton("30");
+		btnSal30.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(7).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblSalPrice.setText(price + " eur");
+				btnSal30.setBackground(Color.orange);
+			}
+		});
 		btnSal30.setBounds(516, 273, 50, 30);
 		pnlPicas.add(btnSal30);
 		
-		JButton btnSal50 = new JButton("50");
+		//JButton btnSal50 = new JButton("50");
+		btnSal50.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String price = picas.get(8).getPicaPrice();
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				lblSalPrice.setText(price + " eur");
+				btnSal50.setBackground(Color.orange);
+			}
+		});
 		btnSal50.setBounds(571, 273, 50, 30);
 		pnlPicas.add(btnSal50);
 		
@@ -243,21 +338,21 @@ public class picaHome {
 		
 		pnlPicas.add(btnPicaAddToBucket);
 		
-		JLabel lblVegPrice = new JLabel("lblVegPrice");
+		//JLabel lblVegPrice = new JLabel("lblVegPrice");
 		lblVegPrice.setToolTipText("");
 		lblVegPrice.setText("");
 		lblVegPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblVegPrice.setBounds(131, 137, 100, 40);
 		pnlPicas.add(lblVegPrice);
 		
-		JLabel lblDarPrice = new JLabel("lblDarPrice");
+		//JLabel lblDarPrice = new JLabel("lblDarPrice");
 		lblDarPrice.setToolTipText("");
 		lblDarPrice.setText("");
 		lblDarPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDarPrice.setBounds(351, 137, 100, 40);
 		pnlPicas.add(lblDarPrice);
 		
-		JLabel lblSalPrice = new JLabel("lblSalPrice");
+		//JLabel lblSalPrice = new JLabel("lblSalPrice");
 		lblSalPrice.setToolTipText("");
 		lblSalPrice.setText("");
 		lblSalPrice.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -322,6 +417,24 @@ public class picaHome {
 		tabbedPane.remove(pnlPicas);
 		tabbedPane.remove(pnlOrders);
 		tabbedPane.remove(pnlBucket);
+	}
+	
+	private void resetPicasPriceButtonsAndLabels(JLabel lblVegPrice, JLabel lblDarPrice, JLabel lblSalPrice,
+												 JButton btnVeg20, JButton btnVeg30, JButton btnVeg50,
+												 JButton btnDar20, JButton btnDar30, JButton btnDar50,
+												 JButton btnSal20, JButton btnSal30, JButton btnSal50) {
+		lblVegPrice.setText("");
+		lblDarPrice.setText("");
+		lblSalPrice.setText("");
+		btnVeg20.setBackground(new ColorUIResource(238, 238, 238));
+		btnVeg30.setBackground(new ColorUIResource(238, 238, 238));
+		btnVeg50.setBackground(new ColorUIResource(238, 238, 238));
+		btnDar20.setBackground(new ColorUIResource(238, 238, 238));
+		btnDar30.setBackground(new ColorUIResource(238, 238, 238));
+		btnDar50.setBackground(new ColorUIResource(238, 238, 238));
+		btnSal20.setBackground(new ColorUIResource(238, 238, 238));
+		btnSal30.setBackground(new ColorUIResource(238, 238, 238));
+		btnSal50.setBackground(new ColorUIResource(238, 238, 238));
 	}
 }
 
