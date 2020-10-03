@@ -33,7 +33,10 @@ public class picaHome {
 
 	private JFrame frmPiccaHut;
 	LinkedList<Picas> picas = new LinkedList<Picas>();
+	LinkedList<Orders> orders = new LinkedList<Orders>();
+	private LinkedList<Order> clientOrder = new LinkedList<Order>();
 	Connections con = new Connections();
+	Picas currentOrder = null;
 	/**
 	 * Launch the application.
 	 */
@@ -50,12 +53,6 @@ public class picaHome {
 		});
 	}
 
-	private static void printArr(LinkedList<Picas> arr)
-	{
-		for(Picas i:arr)
-		     i.printPica();  
-	}
-	
 	/**
 	 * Create the application.
 	 */
@@ -67,8 +64,6 @@ public class picaHome {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		picas = con.LoadSqlPicas();
-		
 		frmPiccaHut = new JFrame();
 		frmPiccaHut.setTitle("Picca Hut");
 		frmPiccaHut.setBounds(100, 100, 706, 483);
@@ -78,6 +73,7 @@ public class picaHome {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frmPiccaHut.getContentPane().add(tabbedPane);
 		
+		//Variables		
 		JPanel pnlPicas = new JPanel();
 		JPanel pnlOrders = new JPanel();
 		JPanel pnlBucket = new JPanel();
@@ -95,6 +91,12 @@ public class picaHome {
 		JButton btnSal30 = new JButton("30");
 		JButton btnSal50 = new JButton("50");
 		
+		//Connections
+		picas = con.LoadSqlPicas();
+		
+		//
+		//Main Panel Elements
+		//
 		JPanel pnlMain = new JPanel();
 		pnlMain.setName("Welcome!");
 		tabbedPane.addTab("Welcome!", null, pnlMain, null);		
@@ -132,23 +134,19 @@ public class picaHome {
 		btnExit.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnExit.setBounds(500, 153, 143, 37);
 		pnlMain.add(btnExit);
-				
-		//JPanel pnlOrders = new JPanel();
-		pnlOrders.setName("Pasūtījumi");
-		tabbedPane.addTab("Pasūtījumi", null, pnlOrders, null);
-		pnlOrders.setLayout(null);
-		
-		//JPanel panel_3 = new JPanel();
-		pnlBucket.setName("Grozs");
-		tabbedPane.addTab("Grozs", null, pnlBucket, null);
-		
+
+		//Logo Method
 		initializeLogo(pnlMain);
 		
+		//
 		//pnlPicas = new JPanel();
+		//
+		//pnlPicas
 		pnlPicas.setName("Picas");
 		tabbedPane.addTab("Picas", null, pnlPicas, null);
 		pnlPicas.setLayout(null);
 		
+		//btnPicaBack
 		JButton btnPicaBack = new JButton(new ImageIcon(((new ImageIcon(
 	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
 		btnPicaBack.addActionListener(new ActionListener() {
@@ -181,27 +179,28 @@ public class picaHome {
 		lblSalami.setBounds(461, 82, 127, 29);
 		pnlPicas.add(lblSalami);
 		
-		JLabel lblNewLabel = new JLabel("<html>picas mīkla, siers, marinēti<br> \r\nšampinjoni, sīpoli, paprika, <br> \r\nolīvas, tomātu mērce, ķiploks, <br> \r\ngaršvielas");
-		lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		lblNewLabel.setToolTipText("");
-		lblNewLabel.setBounds(21, 200, 177, 69);
-		pnlPicas.add(lblNewLabel);
+		JLabel lblVegDescription = new JLabel("<html>picas mīkla, siers, marinēti<br> \r\nšampinjoni, sīpoli, paprika, <br> \r\nolīvas, tomātu mērce, ķiploks, <br> \r\ngaršvielas");
+		lblVegDescription.setFont(new Font("Tahoma", Font.ITALIC, 12));
+		lblVegDescription.setToolTipText("");
+		lblVegDescription.setBounds(21, 200, 177, 69);
+		pnlPicas.add(lblVegDescription);
 		
-		JLabel lblpicasMklaampinjoni = new JLabel("<html>picas mīkla, šampinjoni, tomāti, <br>\r\ncukini, pesto, tomātu mērce, puravs, kapāti zaļumi");
-		lblpicasMklaampinjoni.setToolTipText("");
-		lblpicasMklaampinjoni.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		lblpicasMklaampinjoni.setBounds(238, 192, 177, 69);
-		pnlPicas.add(lblpicasMklaampinjoni);
+		JLabel lblDarDescription = new JLabel("<html>picas mīkla, šampinjoni, tomāti, <br>\r\ncukini, pesto, tomātu mērce, puravs, kapāti zaļumi");
+		lblDarDescription.setToolTipText("");
+		lblDarDescription.setFont(new Font("Tahoma", Font.ITALIC, 12));
+		lblDarDescription.setBounds(238, 192, 177, 69);
+		pnlPicas.add(lblDarDescription);
 		
-		JLabel lblpicasMklaSiers = new JLabel("<html>picas mīkla, siers, salami, mozzarella siers, tomātu mērce, garšvielas");
-		lblpicasMklaSiers.setToolTipText("");
-		lblpicasMklaSiers.setFont(new Font("Tahoma", Font.ITALIC, 12));
-		lblpicasMklaSiers.setBounds(461, 192, 177, 69);
-		pnlPicas.add(lblpicasMklaSiers);
+		JLabel lblSalDescription = new JLabel("<html>picas mīkla, siers, salami, mozzarella siers, tomātu mērce, garšvielas");
+		lblSalDescription.setToolTipText("");
+		lblSalDescription.setFont(new Font("Tahoma", Font.ITALIC, 12));
+		lblSalDescription.setBounds(461, 192, 177, 69);
+		pnlPicas.add(lblSalDescription);
 		
-		//JButton btnVeg20 = new JButton("20");
+		//JButton btnVeg20
 		btnVeg20.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(0);
 				String price = picas.get(0).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -210,12 +209,12 @@ public class picaHome {
 			}
 		});
 		btnVeg20.setBounds(21, 273, 50, 30);
-		//btnVeg20.setBackground(Color.getHSBColor(238, 238, 238));
 		pnlPicas.add(btnVeg20);
 		
-		//JButton btnVeg30 = new JButton("30");
+		//JButton btnVeg30
 		btnVeg30.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(1);
 				String price = picas.get(1).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -226,9 +225,10 @@ public class picaHome {
 		btnVeg30.setBounds(76, 273, 50, 30);
 		pnlPicas.add(btnVeg30);
 		
-		//JButton btnVeg50 = new JButton("50");
+		//JButton btnVeg50
 		btnVeg50.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(2);
 				String price = picas.get(2).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -239,9 +239,10 @@ public class picaHome {
 		btnVeg50.setBounds(131, 273, 50, 30);
 		pnlPicas.add(btnVeg50);
 		
-		//JButton btnDar20 = new JButton("20");
+		//JButton btnDar20
 		btnDar20.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(3);
 				String price = picas.get(3).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -252,9 +253,10 @@ public class picaHome {
 		btnDar20.setBounds(241, 273, 50, 30);
 		pnlPicas.add(btnDar20);
 		
-		//JButton btnDar30 = new JButton("30");		
+		//JButton btnDar30	
 		btnDar30.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(4);
 				String price = picas.get(4).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -265,9 +267,10 @@ public class picaHome {
 		btnDar30.setBounds(296, 273, 50, 30);
 		pnlPicas.add(btnDar30);
 		
-		//JButton btnDar50 = new JButton("50");
+		//JButton btnDar50
 		btnDar50.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(5);
 				String price = picas.get(5).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -278,9 +281,10 @@ public class picaHome {
 		btnDar50.setBounds(351, 273, 50, 30);
 		pnlPicas.add(btnDar50);
 		
-		//JButton btnSal20 = new JButton("20");
+		//JButton btnSal20
 		btnSal20.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(6);
 				String price = picas.get(6).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -291,9 +295,10 @@ public class picaHome {
 		btnSal20.setBounds(461, 273, 50, 30);
 		pnlPicas.add(btnSal20);
 		
-		//JButton btnSal30 = new JButton("30");
+		//JButton btnSal30
 		btnSal30.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(7);
 				String price = picas.get(7).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -304,9 +309,10 @@ public class picaHome {
 		btnSal30.setBounds(516, 273, 50, 30);
 		pnlPicas.add(btnSal30);
 		
-		//JButton btnSal50 = new JButton("50");
+		//JButton btnSal50
 		btnSal50.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				currentOrder = picas.get(8);
 				String price = picas.get(8).getPicaPrice();
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
@@ -322,6 +328,7 @@ public class picaHome {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.add(pnlBucket);
 				tabbedPane.remove(pnlPicas);
+				Order.printClientOrder(clientOrder);
 			}
 		});
 		btnPicaBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -331,12 +338,37 @@ public class picaHome {
 		pnlPicas.add(btnPicaBucket);
 		
 		JButton btnPicaAddToBucket = new JButton((Icon) null);
+		btnPicaAddToBucket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (currentOrder != null)
+				{
+					clientOrder.add(new Order(String.valueOf(clientOrder.size() + 1), currentOrder.getPicaName(), 
+										currentOrder.getPicaSize(), currentOrder.getPicaPrice()));
+					btnPicaBucket.setText("Grozs (" + String.valueOf(clientOrder.size()) + ")");
+				}
+			}
+		});
 		btnPicaAddToBucket.setText("Pievienot grozam");
 		btnPicaAddToBucket.setLocation(new Point(635, 11));
 		btnPicaAddToBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnPicaAddToBucket.setBounds(355, 330, 266, 40);
-		
+		btnPicaAddToBucket.setBounds(355, 330, 266, 40);		
 		pnlPicas.add(btnPicaAddToBucket);
+		
+		JButton btnClearBucket = new JButton((Icon) null);
+		btnClearBucket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
+						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				btnPicaBucket.setText("Grozs");
+				currentOrder = null;
+				clientOrder.removeAll(clientOrder);
+			}
+		});
+		btnClearBucket.setText("Iztukšot");
+		btnClearBucket.setLocation(new Point(635, 11));
+		btnClearBucket.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnClearBucket.setBounds(377, 11, 113, 40);
+		pnlPicas.add(btnClearBucket);
 		
 		//JLabel lblVegPrice = new JLabel("lblVegPrice");
 		lblVegPrice.setToolTipText("");
@@ -359,8 +391,14 @@ public class picaHome {
 		lblSalPrice.setBounds(571, 137, 100, 40);
 		pnlPicas.add(lblSalPrice);
 		
-		initializePicas(pnlPicas);
-		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);
+		//JPanel pnlOrders = new JPanel();
+				pnlOrders.setName("Pasūtījumi");
+				tabbedPane.addTab("Pasūtījumi", null, pnlOrders, null);
+				pnlOrders.setLayout(null);
+				
+				//JPanel pnlBucket
+				pnlBucket.setName("Grozs");
+				tabbedPane.addTab("Grozs", null, pnlBucket, null);
 		
 		JButton btnOrdersBack = new JButton(new ImageIcon(((new ImageIcon(
 	            "back01.png").getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_SMOOTH)))));
@@ -386,6 +424,10 @@ public class picaHome {
 		btnBucketBack.setLocation(new Point(635, 11));
 		btnBucketBack.setBounds(635, 11, 40, 40);
 		pnlBucket.add(btnBucketBack);
+		
+		initializePicas(pnlPicas);
+		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);
+		
 	}
 	
 	private void initializeLogo(JPanel pnlMain) {

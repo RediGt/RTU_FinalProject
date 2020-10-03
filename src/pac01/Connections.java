@@ -14,7 +14,7 @@ public class Connections {
         try {
         	Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(server + database, uid, password);
-			System.out.println("Connection succeeded!");
+			//System.out.println("Connection succeeded!");
         }
         catch (Exception e1) {
     			System.out.println("Connection failed!");
