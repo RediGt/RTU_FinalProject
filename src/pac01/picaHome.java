@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.LinkedList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -44,8 +45,19 @@ public class picaHome {
 				}
 			}
 		});
+		
+		LinkedList<Picas> picas = new LinkedList<Picas>();
+		Connections con = new Connections();
+		picas = con.LoadSqlPicas();
+		printArr(picas);
 	}
 
+	private static void printArr(LinkedList<Picas> arr)
+	{
+		for(Picas i:arr)
+		     i.printPica();  
+	}
+	
 	/**
 	 * Create the application.
 	 */
