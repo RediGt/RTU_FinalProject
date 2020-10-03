@@ -25,13 +25,23 @@ import javax.swing.plaf.ColorUIResource;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class picaHome {
 
@@ -42,8 +52,9 @@ public class picaHome {
 	Connections con = new Connections();
 	Picas currentOrder = null;
 	private JTextField tFieldAddress;
-	private JTextField tFieldDateTime;
+	private JTextField tFieldDate;
 	private JTextField tFieldPhone;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -99,6 +110,13 @@ public class picaHome {
 		JButton btnSal50 = new JButton("50");
 		
 		JLabel lblGrozsOrder = new JLabel("Jūsu gozs ir tukšs!");
+		JLabel lblBucketError = new JLabel("");
+		lblBucketError.setForeground(Color.RED);
+		JTextField tFieldName = new JTextField("Vārds");
+		JTextField tFieldPhone = new JTextField();
+		JTextField tFieldAddress = new JTextField();
+		JTextField tFieldDate = new JTextField();
+		JComboBox comboTime = new JComboBox();
 		
 		//Connections
 		picas = con.LoadSqlPicas();
@@ -345,10 +363,20 @@ public class picaHome {
 				{
 					lblGrozsOrder.setBounds(377, 94, 280, (30 * (clientOrder.size() + 2)));
 					lblGrozsOrder.setText(orderString);
+					tFieldName.setEnabled(true);
+					tFieldPhone.setEnabled(true);
+					tFieldAddress.setEnabled(true);
+					tFieldDate.setEnabled(true);
+					comboTime.setEnabled(true);
 				}
 				else {
 					lblGrozsOrder.setBounds(377, 94, 280, 30);
 					lblGrozsOrder.setText("Jūsu gozs ir tukšs!");
+					tFieldName.setEnabled(false);
+					tFieldPhone.setEnabled(false);
+					tFieldAddress.setEnabled(false);
+					tFieldDate.setEnabled(false);
+					comboTime.setEnabled(false);
 				}
 			}
 		});
@@ -380,6 +408,7 @@ public class picaHome {
 			public void actionPerformed(ActionEvent e) {
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
+				resetCustomerInfo(tFieldName, tFieldPhone, tFieldAddress, tFieldDate, comboTime, lblBucketError);
 				btnPicaBucket.setText("Grozs");
 				currentOrder = null;
 				clientOrder.removeAll(clientOrder);
@@ -487,16 +516,30 @@ public class picaHome {
 		separator_1.setBounds(377, 81, 233, 12);
 		pnlBucket.add(separator_1);
 		
-		JTextField tFieldName = new JTextField("Vārds");
+		//JTextField tFieldName = new JTextField("Vārds");
 		tFieldName.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseExited(MouseEvent e) {
+				if (tFieldName.getText().equals("Vārds"))
+					return;
+					
 				if (tFieldName.getText().equals("")) {
 					tFieldName.setText("Vārds");
+					return;
+				}
+				
+				if (!validateUserName(tFieldName.getText())) {
+					tFieldName.setForeground(Color.red);
+					lblBucketError.setText("<html>Kļudains vārds. Izmantojiet tikai burtus bez <br>atstarpēm!");
+				}
+				else {
+					tFieldName.setForeground(Color.black);
+					lblBucketError.setText("");
 				}
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				tFieldPhone.setForeground(Color.black);
 				if (tFieldName.getText().equals("Vārds")) {
 					tFieldName.setText("");
 				}
@@ -507,10 +550,11 @@ public class picaHome {
 		tFieldName.setBounds(10, 97, 313, 31);
 		pnlBucket.add(tFieldName);
 		
-		tFieldAddress = new JTextField();
+		//JTextField tFieldAddress = new JTextField();
 		tFieldAddress.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				tFieldAddress.setForeground(Color.black);
 				if (tFieldAddress.getText().equals("Piegādes adrese")) {
 					tFieldAddress.setText("");
 				}
@@ -528,40 +572,69 @@ public class picaHome {
 		tFieldAddress.setBounds(10, 181, 313, 31);
 		pnlBucket.add(tFieldAddress);
 		
-		tFieldDateTime = new JTextField();
-		tFieldDateTime.addMouseListener(new MouseAdapter() {
+		
+		//JTextField tFieldDate = new JTextField();
+		tFieldDate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (tFieldDateTime.getText().equals("Vēlamais datums un laiks (dd.mm ss:mm)")) {
-					tFieldDateTime.setText("");
+				tFieldDate.setForeground(Color.black);
+				if (tFieldDate.getText().equals("diena.mēn.gads")) {
+					tFieldDate.setText("");
 				}
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				if (tFieldPhone.getText().equals("")) {
-					tFieldPhone.setText("Vēlamais datums un laiks (dd.mm ss:mm)");
+				if (tFieldDate.getText().equals("diena.mēn.gads"))
+					return;
+				
+				if (tFieldDate.getText().equals("")) {
+					tFieldDate.setText("diena.mēn.gads");
+					return;
 				}
+				
+				if (!validateDate(tFieldDate.getText())) {
+					tFieldDate.setForeground(Color.red);
+					lblBucketError.setText("<html>Kļudains datums. Izmantojiet formatu \"diena.mēn.gads\"");
+				}
+				else {
+					tFieldDate.setForeground(Color.black);
+					lblBucketError.setText("");
+				}	
 			}
 		});
-		tFieldDateTime.setText("Vēlamais datums un laiks (dd.mm ss:mm)");
-		tFieldDateTime.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		tFieldDateTime.setColumns(10);
-		tFieldDateTime.setBounds(10, 223, 313, 31);
-		pnlBucket.add(tFieldDateTime);
+		tFieldDate.setText("diena.mēn.gads");
+		tFieldDate.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tFieldDate.setColumns(10);
+		tFieldDate.setBounds(10, 243, 157, 31);
+		pnlBucket.add(tFieldDate);
 		
-		tFieldPhone = new JTextField();
+		//JTextField tFieldPhone = new JTextField();
 		tFieldPhone.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (tFieldPhone.getText().equals("Kontakttālrunis (xx xxx xxx)")) {
-					tFieldPhone.setText("");
-				}
-			}
-			@Override
 			public void mouseExited(MouseEvent e) {
+				if (tFieldPhone.getText().equals("Kontakttālrunis (xx xxx xxx)"))
+					return;
+				
 				if (tFieldPhone.getText().equals("")) {
 					tFieldPhone.setText("Kontakttālrunis (xx xxx xxx)");
+					return;
 				}
+				
+				if (!validatePhoneNumber(tFieldPhone.getText())) {
+					tFieldPhone.setForeground(Color.red);
+					lblBucketError.setText("<html>Kļudains tālrunis. Izmantojiet formatu \"xx xxx xxx\"");
+				}
+				else {
+					tFieldPhone.setForeground(Color.black);
+					lblBucketError.setText("");
+				}	
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				tFieldPhone.setForeground(Color.black);
+				if (tFieldPhone.getText().equals("Kontakttālrunis (xx xxx xxx)")) {
+					tFieldPhone.setText("");
+				}			
 			}
 		});
 		tFieldPhone.setText("Kontakttālrunis (xx xxx xxx)");
@@ -569,6 +642,91 @@ public class picaHome {
 		tFieldPhone.setColumns(10);
 		tFieldPhone.setBounds(10, 139, 313, 31);
 		pnlBucket.add(tFieldPhone);
+		
+		JButton btnBucketOK = new JButton((Icon) null);
+		btnBucketOK.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tFieldName.getText().equals("Vārds")) {
+					tFieldName.setForeground(Color.red);
+					lblBucketError.setText("Ievadiet vārdu!");
+					return;
+				}
+				
+				if (tFieldPhone.getText().equals("Kontakttālrunis (xx xxx xxx)")) {
+					tFieldPhone.setForeground(Color.red);
+					lblBucketError.setText("Ievadiet tālruni!");
+					return;
+				}
+				
+				if (!lblBucketError.getText().equals(""))
+					return;
+				
+				if (tFieldAddress.getText().equals("Piegādes adrese")) {
+					tFieldAddress.setForeground(Color.red);
+					lblBucketError.setText("Izvelēties piegādes adresi!");
+					return;
+				}
+				
+				if (tFieldDate.getText().equals("diena.mēn.gads")) {
+					tFieldDate.setForeground(Color.red);
+					lblBucketError.setText("Ievadiet piegādes datumu!");
+					return;
+				}
+				
+				if (comboTime.getSelectedIndex() == -1) {
+					lblBucketError.setText("Izvelēties vēlamo piegādes laiku!");
+					return;
+				}
+				
+				lblBucketError.setForeground(Color.black);
+				lblBucketError.setText("Paldies! Pasūtījums pieņemts!");
+			}
+		});
+		btnBucketOK.setText("Apstiprināt");
+		btnBucketOK.setLocation(new Point(635, 11));
+		btnBucketOK.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnBucketOK.setBounds(10, 345, 157, 40);
+		pnlBucket.add(btnBucketOK);
+		
+		JButton btnBucketCancel = new JButton((Icon) null);
+		btnBucketCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {				
+				resetCustomerInfo(tFieldName, tFieldPhone, tFieldAddress, tFieldDate, comboTime, lblBucketError);
+				btnPicaBucket.setText("Grozs");
+				currentOrder = null;
+				clientOrder.removeAll(clientOrder);
+				lblGrozsOrder.setBounds(377, 94, 280, 30);
+				lblGrozsOrder.setText("Jūsu gozs ir tukšs!");
+				tFieldName.setEnabled(false);
+				tFieldPhone.setEnabled(false);
+				tFieldAddress.setEnabled(false);
+				tFieldDate.setEnabled(false);
+				comboTime.setEnabled(false);
+			}
+		});
+		btnBucketCancel.setText("Atcelt");
+		btnBucketCancel.setLocation(new Point(635, 11));
+		btnBucketCancel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnBucketCancel.setBounds(177, 345, 146, 40);
+		pnlBucket.add(btnBucketCancel);
+		
+		//JLabel lblBucketError = new JLabel("");
+		lblBucketError.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lblBucketError.setBounds(10, 302, 313, 32);
+		pnlBucket.add(lblBucketError);
+		
+		JLabel lblBucketDateTime = new JLabel("Vēlamais piegādes datums un laiks :");
+		lblBucketDateTime.setForeground(Color.BLACK);
+		lblBucketDateTime.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblBucketDateTime.setBounds(10, 217, 313, 32);
+		pnlBucket.add(lblBucketDateTime);
+		
+		//JComboBox comboTime = new JComboBox();
+		comboTime.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		comboTime.setModel(new DefaultComboBoxModel(new String[] {"11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"}));
+		comboTime.setBounds(177, 243, 146, 31);
+		comboTime.setSelectedIndex(-1);
+		pnlBucket.add(comboTime);
 	}
 	
 	private void initializeLogo(JPanel pnlMain) {
@@ -619,6 +777,55 @@ public class picaHome {
 		btnSal30.setBackground(new ColorUIResource(238, 238, 238));
 		btnSal50.setBackground(new ColorUIResource(238, 238, 238));
 	}
+	
+	private void resetCustomerInfo(JTextField tFieldName, JTextField tFieldPhone,
+								   JTextField tFieldAddress, JTextField tFieldDate,
+								   JComboBox comboTime, JLabel lblBucketError) {
+		tFieldName.setText("Vārds");
+		tFieldPhone.setText("Kontakttālrunis (xx xxx xxx)");
+		tFieldAddress.setText("Piegādes adrese");
+		tFieldDate.setText("diena.mēn.gads");
+		comboTime.setSelectedIndex(-1);
+		lblBucketError.setText("");
+	}
+	
+	public static Boolean validateUserName(String userName) {
+		Pattern pattern = Pattern.compile("[A-Za-z]*");
+		Matcher m;
+		m = pattern.matcher(userName);
+		if (!m.matches()) {
+			return false;
+		}				
+		return true;
+	}
+	
+	private static Boolean validatePhoneNumber(String userPhone) {
+		// validate phone numbers of format "1234567890" or phone number with - or spaces
+		if (!userPhone.matches("\\d{8}") && 
+			!userPhone.matches("\\d{2}[-\\s]\\d{3}[-\\s]\\d{3}"))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	private static Boolean validateDate(String userDate) {  	   
+	    SimpleDateFormat sdf=new SimpleDateFormat("dd.MM.yyyy");
+	    if (userDate.length() != 10)
+	    	return false;
+	    
+	    if (!userDate.matches("\\d{2}[.]\\d{2}[.]\\d{4}")) {
+				return false;
+			}
+	    
+	    try {
+		    Date d1=sdf.parse(userDate);
+	    } 
+	    catch (ParseException e) {
+	    	return false;
+	    }
+	    return true;
+    }
 }
 
 class CloseListener implements ActionListener{
