@@ -42,6 +42,7 @@ import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 
 public class picaHome {
 
@@ -54,6 +55,7 @@ public class picaHome {
 	private JTextField tFieldAddress;
 	private JTextField tFieldDate;
 	private JTextField tFieldPhone;
+	private JTable table;
 	
 	/**
 	 * Launch the application.
@@ -120,6 +122,7 @@ public class picaHome {
 		
 		//Connections
 		picas = con.LoadSqlPicas();
+		ordersList = con.LoadSqlOrders();
 		
 		//
 		//Main Panel Elements
@@ -487,6 +490,10 @@ public class picaHome {
 		pnlBucket.add(btnBucketBack);
 		pnlBucket.setLayout(null);
 		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);		
+		
+		table = new JTable();
+		table.setBounds(10, 189, 665, 203);
+		pnlOrders.add(table);
 		
 		JLabel lblGrozsOrderPlacement = new JLabel("Pasūtījuma noformēšana");
 		lblGrozsOrderPlacement.setFont(new Font("Tahoma", Font.BOLD, 24));

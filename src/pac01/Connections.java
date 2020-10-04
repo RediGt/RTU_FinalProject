@@ -96,4 +96,37 @@ public class Connections {
             label.Text = "Error";
         }*/
     }
+	
+	public LinkedList<Orders> LoadSqlOrders() {
+        LinkedList<Orders> ordersList = new LinkedList<Orders>();
+        String query = "SELECT * FROM pizzashop.orders";       
+
+        if (this.Open() == true) {
+        	try {
+	        	Statement stmt = connection.createStatement();
+	        	ResultSet rs = stmt.executeQuery(query);
+	        	
+	            while (rs.next()){
+	            	ordersList.add(new Orders(String.valueOf(rs.getInt("orderID")),
+	            			rs.getString("orderDescription"),
+	            			String.valueOf(rs.getDouble("totalPrice")),
+	            			rs.getString("orderStatus"),
+	            			rs.getString("clName"),
+	            			rs.getString("clPhone"),
+	            			rs.getString("clAddress"),
+	            			rs.getString("clDateTime")));
+	            }
+	            rs.close();
+				stmt.close();
+				this.Close();
+            }
+        	catch (Exception e1) {
+    			System.out.println("Connection failed!");
+            }
+        }
+        else {
+        	ordersList = null;
+        }
+        return ordersList;
+    }
 }
