@@ -1,17 +1,15 @@
 package pac01;
 
 import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JLabel;
-import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JTabbedPane;
 import javax.swing.Icon;
@@ -19,17 +17,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Point;
 import java.awt.Font;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.plaf.ColorUIResource;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.ActionListener;
@@ -38,8 +36,8 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.InputMethodEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTable;
@@ -52,9 +50,6 @@ public class picaHome {
 	private LinkedList<Order> clientOrder = new LinkedList<Order>();
 	Connections con = new Connections();
 	Picas currentOrder = null;
-	private JTextField tFieldAddress;
-	private JTextField tFieldDate;
-	private JTextField tFieldPhone;
 	private JTable table;
 	
 	/**
@@ -93,7 +88,9 @@ public class picaHome {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frmPiccaHut.getContentPane().add(tabbedPane);
 		
-		//Variables		
+		//
+		//Variables
+		//
 		JPanel pnlPicas = new JPanel();
 		JPanel pnlOrders = new JPanel();
 		JPanel pnlBucket = new JPanel();
@@ -120,9 +117,11 @@ public class picaHome {
 		JTextField tFieldDate = new JTextField();
 		JComboBox comboTime = new JComboBox();
 		
+		JTextPane tPaneOrdersSearch = new JTextPane();
+		
 		//Connections
 		picas = con.LoadSqlPicas();
-		ordersList = con.LoadSqlOrders();
+		ordersList = con.LoadSqlOrders("Rādīt visus", "");
 		
 		//
 		//Main Panel Elements
@@ -153,6 +152,7 @@ public class picaHome {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.remove(pnlMain);
 				tabbedPane.add(pnlOrders);
+				//refreshTable(tableModel);
 			}			
 		});
 		btnMainStuff.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -491,10 +491,76 @@ public class picaHome {
 		pnlBucket.setLayout(null);
 		onStart(tabbedPane, pnlPicas, pnlOrders, pnlBucket);		
 		
-		table = new JTable();
-		table.setBounds(10, 189, 665, 203);
-		pnlOrders.add(table);
+		String[] columnNames = {"Nr.",
+                "Pasūtījums",
+                "Cena",
+                "Statuss",
+                "Klienta vārds",
+                "Tālrunis",
+                "Adrese",
+                "Vēlamais datums"};
 		
+		DefaultTableModel tableModel = new DefaultTableModel(Orders.orderDataForTable(ordersList), columnNames);
+		table = new JTable(tableModel);
+		JScrollPane scrollPane = new JScrollPane(table);
+		TableColumn column = null;
+		column = table.getColumnModel().getColumn(0);
+		column.setPreferredWidth(5);
+		column = table.getColumnModel().getColumn(1);
+		column.setPreferredWidth(150);
+		column = table.getColumnModel().getColumn(2);
+		column.setPreferredWidth(15);
+		column = table.getColumnModel().getColumn(3);
+		column.setPreferredWidth(40);
+		column = table.getColumnModel().getColumn(4);
+		column.setPreferredWidth(50);
+		column = table.getColumnModel().getColumn(5);
+		column.setPreferredWidth(40);
+		table.setFillsViewportHeight(true);        
+		pnlOrders.add(scrollPane);        
+		scrollPane.setBounds(10, 152, 665, 203);
+		
+		JLabel lblNewLabel = new JLabel("Meklēt pēc :");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNewLabel.setBounds(182, 366, 90, 26);
+		pnlOrders.add(lblNewLabel);
+		
+		JComboBox comboOrdersSearch = new JComboBox();
+		comboOrdersSearch.addItemListener(new ItemListener() {
+		    public void itemStateChanged(ItemEvent arg0) {
+		        //Do Something
+		    	//System.out.println("Value combo changed!");
+		    	tPaneOrdersSearch.setText("");
+		    	ordersList = con.LoadSqlOrders("Rādīt visus", "");		    	
+		    	refreshTable(tableModel);
+		    }
+		});
+		comboOrdersSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		comboOrdersSearch.setModel(new DefaultComboBoxModel(new String[] {"Rādīt visus", "Statuss", "Klienta vārds"}));
+		comboOrdersSearch.setSelectedIndex(-1);
+		comboOrdersSearch.setBounds(272, 366, 173, 26);
+		pnlOrders.add(comboOrdersSearch);
+		
+		//JTextPane tPaneOrdersSearch = new JTextPane();
+		tPaneOrdersSearch.getDocument().addDocumentListener(new DocumentListener() {
+			  public void changedUpdate(DocumentEvent e) {
+			    //warn();
+			  }
+			  public void removeUpdate(DocumentEvent e) {
+			    warn();
+			  }
+			  public void insertUpdate(DocumentEvent e) {
+			    warn();
+			  }
+			  public void warn() {
+			    ordersList = con.LoadSqlOrders(String.valueOf(comboOrdersSearch.getSelectedItem()), tPaneOrdersSearch.getText());
+			    refreshTable(tableModel);
+			  }
+			});
+		tPaneOrdersSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tPaneOrdersSearch.setBounds(455, 366, 220, 26);
+		pnlOrders.add(tPaneOrdersSearch);
+				
 		JLabel lblGrozsOrderPlacement = new JLabel("Pasūtījuma noformēšana");
 		lblGrozsOrderPlacement.setFont(new Font("Tahoma", Font.BOLD, 24));
 		lblGrozsOrderPlacement.setBounds(10, 11, 324, 32);
@@ -698,6 +764,7 @@ public class picaHome {
 											 tFieldDate.getText() + " " + String.valueOf(comboTime.getSelectedItem()));
 				ordersList.add(newOrder);				
 				con.AddNewOrder(ordersList);
+				refreshTable(tableModel);
 			}
 		});
 		btnBucketOK.setText("Apstiprināt");
@@ -744,7 +811,7 @@ public class picaHome {
 		comboTime.setModel(new DefaultComboBoxModel(new String[] {"11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"}));
 		comboTime.setBounds(177, 243, 146, 31);
 		comboTime.setSelectedIndex(-1);
-		pnlBucket.add(comboTime);
+		pnlBucket.add(comboTime);		
 	}
 	
 	private void initializeLogo(JPanel pnlMain) {
@@ -844,6 +911,23 @@ public class picaHome {
 	    }
 	    return true;
     }
+	
+	public void refreshTable(DefaultTableModel tableModel) {
+		tableModel.setRowCount(0);
+	    for (int i = 0; i < ordersList.size(); i++) {
+	    	String[] orderData = new String[8];
+    		orderData[0] = ordersList.get(i).getOrderID();
+    		orderData[1] = ordersList.get(i).getOrder();
+    		orderData[2] = ordersList.get(i).getOrderTotalPrice();
+    		orderData[3] = ordersList.get(i).getOrderStatus();
+    		orderData[4] = ordersList.get(i).getOrderClientName();
+    		orderData[5] = ordersList.get(i).getOrderClientPhone();
+    		orderData[6] = ordersList.get(i).getOrderClientAddress();
+    		orderData[7] = ordersList.get(i).getOrderClientDataTime();
+    		
+    		tableModel.addRow(orderData);
+    	}
+	}
 }
 
 class CloseListener implements ActionListener{

@@ -43,9 +43,8 @@ public class Order {
     
     public static Double clientOrderTotal(LinkedList<Order> clientOrder) {
     	Double total = 0.0;
-    	//DecimalFormat df = new DecimalFormat("###.##");
     	for(Order i:clientOrder)
-    		total += Double.valueOf(i.price);
+    		total += Double.valueOf(i.price);  	
     	return Math.round(total * 100.0) / 100.0;
 	}
 }

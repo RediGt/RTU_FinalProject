@@ -8,13 +8,12 @@ public class Connections {
     private String server = "jdbc:mysql://localhost:3306/";
     private String database= "pizzashop";
     private String uid = "root";
-    private String password = "Mazda636";
+    private String password = "***";
 
     public Boolean Open() {
         try {
         	Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(server + database, uid, password);
-			//System.out.println("Connection succeeded!");
         }
         catch (Exception e1) {
     			System.out.println("Connection failed!");
@@ -82,24 +81,27 @@ public class Connections {
         		stmt.execute(query);
         		stmt.close();
         		this.Close();
-        		System.out.println("Connection is made!");
+        		//System.out.println("Connection is made!");
         	}
         	catch (Exception e1) {
     			System.out.println("Connection failed!");
     		}
         }
-       
-            /*label.Text = "Data Stored Successfully";
-        }
-        else
-        {
-            label.Text = "Error";
-        }*/
     }
 	
-	public LinkedList<Orders> LoadSqlOrders() {
+	public LinkedList<Orders> LoadSqlOrders(String chosenParameter, String searchText) {
         LinkedList<Orders> ordersList = new LinkedList<Orders>();
-        String query = "SELECT * FROM pizzashop.orders";       
+        String query = "SELECT * FROM pizzashop.orders";
+        switch (chosenParameter){
+            case "Statuss":
+                query += " WHERE orders.orderStatus LIKE '" + searchText + "%'";
+                break;
+            case "Klienta vārds":
+                query += " WHERE orders.clName LIKE '" + searchText + "%'";
+                break;
+            default:
+                break;
+        }
 
         if (this.Open() == true) {
         	try {

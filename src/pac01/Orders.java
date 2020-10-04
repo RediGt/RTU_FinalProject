@@ -4,7 +4,6 @@ import java.util.LinkedList;
 
 public class Orders {
 	private String id;
-	//private LinkedList<Picas> order;
 	private String order;
 	private String totalPrice;
 	private String orderStatus;
@@ -63,5 +62,21 @@ public class Orders {
     
     public String getOrderClientDataTime() {
 		return this.supplyDataTime;
+	}
+    
+    public static Object[][] orderDataForTable(LinkedList<Orders> ordersList) {
+    	Object[][] orderData = new Object[ordersList.size()][8];
+    	
+    	for (int i = 0; i < ordersList.size(); i++) {
+    		orderData[i][0] = ordersList.get(i).getOrderID();
+    		orderData[i][1] = ordersList.get(i).getOrder();
+    		orderData[i][2] = ordersList.get(i).getOrderTotalPrice();
+    		orderData[i][3] = ordersList.get(i).getOrderStatus();
+    		orderData[i][4] = ordersList.get(i).getOrderClientName();
+    		orderData[i][5] = ordersList.get(i).getOrderClientPhone();
+    		orderData[i][6] = ordersList.get(i).getOrderClientAddress();
+    		orderData[i][7] = ordersList.get(i).getOrderClientDataTime();
+    	}
+    	return orderData;
 	}
 }
