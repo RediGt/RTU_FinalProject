@@ -25,4 +25,43 @@ public class Orders {
         this.clientAddress = clientAddress;
         this.supplyDataTime = supplyDataTime;
     }
+    
+    public void printOrder() {
+		System.out.println(this.id + "  " + this.order + "   \n" + this.totalPrice + 
+				"  " + this.orderStatus + "  " + this.clientName + "\n" + 
+				"  " + this.clientPhone + "  " + this.clientAddress + "\n" +
+				this.supplyDataTime);  
+	}
+    
+    public String getOrderID() {
+		return this.id;
+	}
+    
+    public String getOrder() {
+		return this.order;
+	}
+    
+    public String getOrderTotalPrice() {
+		return this.totalPrice;
+	}
+    
+    public String getOrderStatus() {
+		return this.orderStatus;
+	}
+    
+    public String getOrderClientName() {
+		return this.clientName;
+	}
+    
+    public String getOrderClientPhone() {
+		return this.clientPhone;
+	}
+    
+    public String getOrderClientAddress() {
+		return this.clientAddress;
+	}
+    
+    public String getOrderClientDataTime() {
+		return this.supplyDataTime;
+	}
 }

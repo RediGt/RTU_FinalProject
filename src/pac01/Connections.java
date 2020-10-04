@@ -63,4 +63,37 @@ public class Connections {
         }
         return picas;
     }
+	
+	public void AddNewOrder(LinkedList<Orders> ordersList)
+    {
+        String query = "INSERT INTO orders (orderDescription, totalPrice, orderStatus, " +
+        									"clName, clPhone, clAddress, clDateTime) " +
+            "VALUES ('" + ordersList.getLast().getOrder() + "', " +
+            			  Double.valueOf(ordersList.getLast().getOrderTotalPrice()) + ", '" +
+            			  ordersList.getLast().getOrderStatus() + "', '" +
+            			  ordersList.getLast().getOrderClientName() + "', '" +
+            			  ordersList.getLast().getOrderClientPhone() + "', '" +
+            			  ordersList.getLast().getOrderClientAddress() + "', '" +
+            			  ordersList.getLast().getOrderClientDataTime() + "');";                        
+		
+        if (this.Open() == true) {
+        	try {
+        		Statement stmt = connection.createStatement();
+        		stmt.execute(query);
+        		stmt.close();
+        		this.Close();
+        		System.out.println("Connection is made!");
+        	}
+        	catch (Exception e1) {
+    			System.out.println("Connection failed!");
+    		}
+        }
+       
+            /*label.Text = "Data Stored Successfully";
+        }
+        else
+        {
+            label.Text = "Error";
+        }*/
+    }
 }

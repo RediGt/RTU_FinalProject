@@ -24,13 +24,20 @@ public class Order {
     		System.out.println(i.id + "  " + i.picaName + "  " + i.size + "  " + i.price);  
 	}
     
-    public static String clientOrderToString(LinkedList<Order> clientOrder) {
+    public static String clientOrderToStringForLabel(LinkedList<Order> clientOrder) {
     	String orderString = "";
     	for(Order i:clientOrder)
-    		orderString += ("<html>" + i.id + ".\t" + i.picaName + "\t" + i.size + "cm\t" + i.price + "eur<br>");  
+    		orderString += ("<html>" + i.id + ".\t" + i.picaName + "\t" + i.size + "cm\t" + i.price + "eur");  
     	
     	orderString += ("<br><br>Kopā: "); 
     	orderString += clientOrderTotal(clientOrder) + " eur";
+    	return orderString;
+	}
+    
+    public static String clientOrderToString(LinkedList<Order> clientOrder) {
+    	String orderString = "";
+    	for(Order i:clientOrder)
+    		orderString += (i.picaName + " " + i.size + "cm   ");    	
     	return orderString;
 	}
     

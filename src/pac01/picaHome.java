@@ -47,7 +47,7 @@ public class picaHome {
 
 	private JFrame frmPiccaHut;
 	LinkedList<Picas> picas = new LinkedList<Picas>();
-	LinkedList<Orders> orders = new LinkedList<Orders>();
+	LinkedList<Orders> ordersList = new LinkedList<Orders>();
 	private LinkedList<Order> clientOrder = new LinkedList<Order>();
 	Connections con = new Connections();
 	Picas currentOrder = null;
@@ -357,8 +357,8 @@ public class picaHome {
 				tabbedPane.remove(pnlPicas);
 				resetPicasPriceButtonsAndLabels(lblVegPrice, lblDarPrice, lblSalPrice,
 						 btnVeg20, btnVeg30, btnVeg50, btnDar20, btnDar30, btnDar50, btnSal20, btnSal30, btnSal50);
-				Order.printClientOrder(clientOrder);
-				String orderString = Order.clientOrderToString(clientOrder);
+				//Order.printClientOrder(clientOrder);
+				String orderString = Order.clientOrderToStringForLabel(clientOrder);
 				if (clientOrder.size() != 0)
 				{
 					lblGrozsOrder.setBounds(377, 94, 280, (30 * (clientOrder.size() + 2)));
@@ -505,7 +505,7 @@ public class picaHome {
 		
 		//JLabel lblGrozsOrder = new JLabel("Jūsu gozs ir tukšs!");
 		lblGrozsOrder.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblGrozsOrder.setBounds(377, 94, 281, 32);
+		lblGrozsOrder.setBounds(377, 94, 298, 32);
 		pnlBucket.add(lblGrozsOrder);
 		
 		JSeparator separator = new JSeparator();
@@ -680,6 +680,17 @@ public class picaHome {
 				
 				lblBucketError.setForeground(Color.black);
 				lblBucketError.setText("Paldies! Pasūtījums pieņemts!");
+				
+				Orders newOrder = new Orders(String.valueOf(ordersList.size() + 1),
+											 Order.clientOrderToString(clientOrder),
+											 String.valueOf(Order.clientOrderTotal(clientOrder)),
+											 "Aktīvs",
+											 tFieldName.getText(),
+											 tFieldPhone.getText(), 
+											 tFieldAddress.getText(),
+											 tFieldDate.getText() + " " + String.valueOf(comboTime.getSelectedItem()));
+				ordersList.add(newOrder);				
+				con.AddNewOrder(ordersList);
 			}
 		});
 		btnBucketOK.setText("Apstiprināt");
