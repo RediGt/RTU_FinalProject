@@ -27,7 +27,7 @@ public class Order {
     public static String clientOrderToStringForLabel(LinkedList<Order> clientOrder) {
     	String orderString = "";
     	for(Order i:clientOrder)
-    		orderString += ("<html>" + i.id + ".\t" + i.picaName + "\t" + i.size + "cm\t" + i.price + "eur");  
+    		orderString += ("<html>" + i.id + ". " + i.picaName + " " + i.size + "cm " + i.price + "eur<br>");  
     	
     	orderString += ("<br><br>Kopā: "); 
     	orderString += clientOrderTotal(clientOrder) + " eur";

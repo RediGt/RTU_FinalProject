@@ -364,7 +364,7 @@ public class picaHome {
 				String orderString = Order.clientOrderToStringForLabel(clientOrder);
 				if (clientOrder.size() != 0)
 				{
-					lblGrozsOrder.setBounds(377, 94, 280, (30 * (clientOrder.size() + 2)));
+					lblGrozsOrder.setBounds(350, 94, 320, (30 * (clientOrder.size() + 2)));
 					lblGrozsOrder.setText(orderString);
 					tFieldName.setEnabled(true);
 					tFieldPhone.setEnabled(true);
@@ -373,7 +373,7 @@ public class picaHome {
 					comboTime.setEnabled(true);
 				}
 				else {
-					lblGrozsOrder.setBounds(377, 94, 280, 30);
+					lblGrozsOrder.setBounds(350, 94, 320, 30);
 					lblGrozsOrder.setText("Jūsu gozs ir tukšs!");
 					tFieldName.setEnabled(false);
 					tFieldPhone.setEnabled(false);
@@ -573,12 +573,12 @@ public class picaHome {
 		
 		JLabel lblGrozsOrderHeader = new JLabel("Pasūtījums :");
 		lblGrozsOrderHeader.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblGrozsOrderHeader.setBounds(377, 54, 136, 32);
+		lblGrozsOrderHeader.setBounds(350, 54, 136, 32);
 		pnlBucket.add(lblGrozsOrderHeader);
 		
 		//JLabel lblGrozsOrder = new JLabel("Jūsu gozs ir tukšs!");
 		lblGrozsOrder.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblGrozsOrder.setBounds(377, 94, 298, 32);
+		lblGrozsOrder.setBounds(350, 94, 320, 32);
 		pnlBucket.add(lblGrozsOrder);
 		
 		JSeparator separator = new JSeparator();
@@ -586,7 +586,7 @@ public class picaHome {
 		pnlBucket.add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(377, 81, 233, 12);
+		separator_1.setBounds(350, 81, 260, 12);
 		pnlBucket.add(separator_1);
 		
 		//JTextField tFieldName = new JTextField("Vārds");
